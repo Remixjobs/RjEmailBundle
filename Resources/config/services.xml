@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="rj_email.email_template.class">Rj\EmailBundle\Entity\EmailTemplate</parameter>
+        <parameter key="rj_email.sent_email.class">Rj\EmailBundle\Entity\SentEmail</parameter>
+    </parameters>
+
+    <services>
+        <service id="rj_email.entity_manager" factory-service="doctrine" factory-method="getEntityManager" class="Doctrine\ORM\EntityManager" public="false">
+        </service>
+
+        <service id="rj_email.email_template.manager" class="Rj\EmailBundle\Entity\EmailTemplateManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%rj_email.email_template.class%</argument>
+            <argument type="service" id="twig" />
+            <tag name="swiftmailer.plugin" alias="swifmailer_plugin" />
+        </service>
+
+        <service id="rj_email.email_template_loader" class="Rj\EmailBundle\Twig\EmailTemplateLoader">
+            <argument type="service" id="twig.loader" />
+            <argument type="service" id="rj_email.email_template.manager" />
+        </service>
+
+        <service id="rj_email.twig_chain_loader" class="Twig_Loader_Chain">
+            <call method="addLoader">
+                <argument type="service" id="twig.loader" />
+            </call>
+            <call method="addLoader">
+                <argument type="service" id="rj_email.email_template_loader" />
+            </call>
+        </service>
+
+        <service id="rj_email.sent_email.manager" class="Rj\EmailBundle\Entity\SentEmailManager">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%rj_email.sent_email.class%</argument>
+        </service>
+
+        <service id="rj_email.message_send_listener" class="Rj\EmailBundle\Swift\Events\SendListener\MessageSendListener">
+            <argument type="service" id="rj_email.sent_email.manager" />
+            <tag name="swiftmailer.plugin" alias="swifmailer_plugin" />
+        </service>
+
+        <service id="rj_email.form_callback_type" class="Rj\EmailBundle\Form\Type\CallbackType">
+            <tag name="form.type" />
+        </service>
+    </services>
+</container>

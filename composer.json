@@ -1,0 +1,33 @@
+{
+    "name": "rj/email-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony2 EmailBundle.",
+    "keywords": ["email"],
+    "homepage": "http://github.com/jeremymarc/RjEmailBundle/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name":"Jeremy Marc",
+            "email":"jeremy.marc@me.com"
+        },
+        {
+            "name":"Arnaud Le Blanc",
+            "email":"arnaud.lb@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/framework-bundle": "2.*",
+        "doctrine/orm": "2.2.*",
+        "swiftmailer/swiftmailer": "*",
+        "stof/doctrine-extensions-bundle": "dev-master",
+        "a2lix/translation-form-bundle" : "dev-master"
+    },
+
+    "autoload": {
+        "psr-0": { "Rj\\EmailBundle": "" }
+    },
+
+    "target-dir": "Rj/EmailBundle"
+}
