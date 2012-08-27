@@ -9,21 +9,15 @@ use Rj\EmailBundle\Entity\EmailTemplateManager;
 
 class EmailTemplateLoader implements \Twig_LoaderInterface
 {
-    private $parent;
     private $manager;
 
-    public function __construct(\Twig_LoaderInterface $parent, EmailTemplateManager $manager)
+    public function __construct(EmailTemplateManager $manager)
     {
-        $this->parent = $parent;
         $this->manager = $manager;
     }
 
     public function getSource($name)
     {
-        if (!$this->canHandle($name)) {
-            return $this->parent->getSource($name);
-        }
-
         list($name, $locale, $part) = $this->parse($name);
 
         $template = $this->getTemplate($name);
@@ -34,10 +28,6 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
 
     public function getCacheKey($fullName)
     {
-        if (!$this->canHandle($fullName)) {
-            return $this->parent->getCacheKey($fullName);
-        }
-
         list($name, ) = $this->parse($fullName);
 
         $template = $this->getTemplate($name);
@@ -51,10 +41,6 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
 
     public function isFresh($name, $time)
     {
-        if (!$this->canHandle($name)) {
-            return $this->parent->isFresh($name, $time);
-        }
-
         list($name, ) = $this->parse($name);
 
         $template = $this->getTemplate($name);
@@ -70,7 +56,7 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
     private function parse($name)
     {
         if (!preg_match('#^email_template:([^:]+):([^:]+):([^:]+)$#', $name, $m)) {
-            throw new \Exception('invalid template name');
+            throw new \Twig_Error_Loader('invalid template name');
         }
 
         return array($m[1], $m[2], $m[3]);

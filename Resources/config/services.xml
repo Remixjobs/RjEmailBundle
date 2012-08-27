@@ -7,31 +7,31 @@
     <parameters>
         <parameter key="rj_email.email_template.class">Rj\EmailBundle\Entity\EmailTemplate</parameter>
         <parameter key="rj_email.sent_email.class">Rj\EmailBundle\Entity\SentEmail</parameter>
+        <parameter key="twig.loader.filesystem.class">Symfony\Bundle\TwigBundle\Loader\FilesystemLoader</parameter>
     </parameters>
 
     <services>
-        <service id="rj_email.entity_manager" factory-service="doctrine" factory-method="getEntityManager" class="Doctrine\ORM\EntityManager" public="false">
-        </service>
-
         <service id="rj_email.email_template.manager" class="Rj\EmailBundle\Entity\EmailTemplateManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%rj_email.email_template.class%</argument>
-            <argument type="service" id="twig" />
+            <!-- <argument type="service" id="twig" /> -->
             <tag name="swiftmailer.plugin" alias="swifmailer_plugin" />
         </service>
 
         <service id="rj_email.email_template_loader" class="Rj\EmailBundle\Twig\EmailTemplateLoader">
-            <argument type="service" id="twig.loader" />
             <argument type="service" id="rj_email.email_template.manager" />
         </service>
 
+        <service id="rj_email.twig_filesystem_loader" class="%twig.loader.filesystem.class%">
+            <argument type="service" id="templating.locator" />
+            <argument type="service" id="templating.name_parser" />
+        </service>
+
         <service id="rj_email.twig_chain_loader" class="Twig_Loader_Chain">
-            <call method="addLoader">
-                <argument type="service" id="twig.loader" />
-            </call>
-            <call method="addLoader">
+            <argument type="collection">
                 <argument type="service" id="rj_email.email_template_loader" />
-            </call>
+                <argument type="service" id="jm_ab.twig_filesystem_loader" />
+            </argument>
         </service>
 
         <service id="rj_email.sent_email.manager" class="Rj\EmailBundle\Entity\SentEmailManager">
@@ -47,5 +47,14 @@
         <service id="rj_email.form_callback_type" class="Rj\EmailBundle\Form\Type\CallbackType">
             <tag name="form.type" />
         </service>
+
+        <!-- Sonata -->
+        <service id="rj_email.email_admin" class="Rj\EmailBundle\Admin\EmailTemplateAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Site" label="Emails" />
+            <argument />
+            <argument>Rj\EmailBundle\Entity\EmailTemplate</argument>
+            <argument>RjEmailBundle:EmailTemplateAdmin</argument>
+        </service>
+
     </services>
 </container>
