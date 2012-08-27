@@ -174,4 +174,9 @@ class EmailTemplate
     public function setTranslationProxies()
     {
     }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
 }
