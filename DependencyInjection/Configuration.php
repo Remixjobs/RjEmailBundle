@@ -15,6 +15,11 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('rj_email');
 
+
+		$rootNode->children()
+            ->scalarNode('custom_loader')->defaultValue(true)->end()
+            ;
+
         return $treeBuilder;
     }
 }
