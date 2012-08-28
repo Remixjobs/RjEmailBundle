@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+	<services>
+        <service id="rj_email.form_callback_type" class="Rj\EmailBundle\Form\Type\CallbackType">
+            <tag name="form.type" />
+		</service>
+
+        <service id="rj_email.email_admin" class="Rj\EmailBundle\Admin\EmailTemplateAdmin">
+            <tag name="sonata.admin" manager_type="orm" group="Site" label="Emails" />
+            <argument />
+            <argument>Rj\EmailBundle\Entity\EmailTemplate</argument>
+            <argument>RjEmailBundle:EmailTemplateAdmin</argument>
+        </service>
+    </services>
+</container>
