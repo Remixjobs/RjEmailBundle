@@ -20,7 +20,7 @@ class CallbackType extends AbstractType
         call_user_func($this->callback, $builder, $options);
     }
 
-    public function getDefaultOptions()
+    public function getDefaultOptions(array $options)
     {
         return array(
             'data_class' => 'Rj\EmailBundle\Entity\EmailTemplateTranslationProxy'
