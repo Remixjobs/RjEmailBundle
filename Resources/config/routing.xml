@@ -4,11 +4,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="rj_email_view_online" pattern="/symfony/email/{unique_id}">
-        <default key="_controller">RjEmailBundle:Email:index</default>
+    <route id="rj_email_send" pattern="/email/send">
+        <default key="_controller">RjEmailBundle:Email:send</default>
     </route>
 
-    <route id="rj_email_send" pattern="/symfony/send">
-        <default key="_controller">RjEmailBundle:Email:send</default>
+    <route id="rj_email_view_online" pattern="/email/{unique_id}">
+        <default key="_controller">RjEmailBundle:Email:index</default>
     </route>
 </routes>

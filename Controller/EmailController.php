@@ -8,12 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Rj\EmailBundle\Entity\EmailTemplate;
-
+use Rj\EmailBundle\Swift\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//extends ContainerAwareInterface
 
 class EmailController extends Controller
 {
+    /**
+     * View an sent email online
+     */
     public function indexAction($unique_id)
     {
         $sentEmailManager = $this->container->get('rj_email.sent_email.manager');
@@ -33,17 +35,24 @@ class EmailController extends Controller
         $em = $this->getDoctrine()->getEntityManager();
 
         $templateName = "test";
-        $locale = "fr_FR";
+        $locale = "de_DE";
         $part = "body";
         $vars = array("name" => "Jeremy");
 
-        $emailTemplateManager = $this->container->get('rj_email.email_template.manager');
+        $emailTemplateManager = $this->get('rj_email.email_template.manager');
 
         $template = new EmailTemplate;
         $template->setName('test');
         $template->translate('fr')->setBody("Hello #{name}!");
         //$em->persist($template);
         //$em->flush();
+
+
+        $message = new Message($response['subject'], $response['body']);
+        $message->setFrom('jeremy@opencandy.com')
+            ->setTo('jeremy@opencandy.com')
+            ;
+        $this->get('mailer')->send($message);
 
         $response = $emailTemplateManager->renderEmail($templateName, $locale, $vars);
         return new Response($response['body'], 200, array(
