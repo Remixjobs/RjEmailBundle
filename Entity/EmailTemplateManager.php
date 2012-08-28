@@ -6,21 +6,22 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Rj\EmailBundle\Swift\Message;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class EmailTemplateManager
 {
     protected $em;
     protected $class;
     protected $repository;
-    protected $twig;
+    protected $container;
     protected $cache;
 
-    public function __construct(EntityManager $em, $class, \Twig_Environment $twig)
+    public function __construct(EntityManager $em, $class, ContainerInterface $container)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class);
-        $this->twig = $twig;
+        $this->container = $container;
 
         $this->cache = array();
     }
@@ -36,7 +37,7 @@ class EmailTemplateManager
 
         $vars['locale'] = $locale;
 
-        return $this->twig->render($name, $vars);
+        return $this->container->get('twig')->render($name, $vars);
     }
 
     public function renderEmail($templateName, $locale, $vars, Message $message = null)
@@ -89,5 +90,21 @@ class EmailTemplateManager
         list($lang, ) = explode('_', $locale);
 
         return $template->translate($lang);
+    }
+
+    public function toMessage(EmailTemplate $template, $to = null)
+    {
+        $message = new Message();
+        $message
+            ->setSubject($template->getSubject())
+            ->setFrom(array($template->getFromEmails() => $template->getFromName()))
+            ->setBody($template->getBody())
+            ;
+
+        if ($to) {
+            $message->setTo($to);
+        }
+
+        return $message;
     }
 }
