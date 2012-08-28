@@ -10,15 +10,21 @@ class TwigPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         if (true === $container->getParameter('rj_email.custom_loader')) {
-            $loader = $container->getParameter('twig.loader.class');
-            if ($loader === "Symfony\Bundle\TwigBundle\Loader\FilesystemLoader") {
-                $abTwigLoader = $container->getDefinition('rj_email.twig_chain_loader');
-                $container->setDefinition('twig.loader', $abTwigLoader);
-            } else if ($loader === "Twig\Loader\Chain") {
-                $loader->addMethodCall('addLoader', new Reference('rj_email.email_template_loader'));
-            } else {
-                throw new \Exception("Invalid Twig loader");
+            $loader = $container->getDefinition('twig.loader');
+
+            $class = $loader->getClass();
+            if (preg_match("/%(.*)%/", $class, $m)) {
+                $class = $container->getParameter($m[1]);
             }
+
+            if ("Twig\Loader\Chain" === $class) {
+                $loader->addMethodCall('addLoader', array($container->getDefinition('rj_email.email_template_loader')));
+                return;
+            }
+
+            $customLoader = $container->getDefinition('rj_email.twig_loader');
+            $customLoader->addMethodCall('addLoader', array($loader));
+            $container->setDefinition('twig.loader', $customLoader);
         }
     }
 }

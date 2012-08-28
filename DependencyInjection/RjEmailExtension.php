@@ -17,7 +17,13 @@ class RjEmailExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('rj_email.custom_loader', $config['custom_loader']);
+
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
+
+        if (class_exists("Sonata\AdminBundle\Admin\Admin")) {
+            $loader->load('sonata.xml');
+        }
     }
 }
