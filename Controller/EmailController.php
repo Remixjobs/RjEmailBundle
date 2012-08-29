@@ -10,6 +10,7 @@ use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Rj\EmailBundle\Swift\Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class EmailController extends Controller
 {
@@ -18,45 +19,15 @@ class EmailController extends Controller
      */
     public function indexAction($unique_id)
     {
-        $sentEmailManager = $this->container->get('rj_email.sent_email.manager');
+        $sentEmailManager = $this->container->get('rj_email.sent_email_manager');
         $sentEmail = $sentEmailManager->findSentEmailByUniqueId($unique_id);
 
         if (!$sentEmail) {
-            throw new \Exception('no such email'); //TODO: 404
+            throw new NotFoundHttpException('This email doesn\'t exists.');
         }
 
         return new Response($sentEmail->getBody(), 200, array(
             'Content-Type' => $sentEmail->getContentType(),
-        ));
-    }
-
-    public function sendAction()
-    {
-        $em = $this->getDoctrine()->getEntityManager();
-
-        $templateName = "test";
-        $locale = "de_DE";
-        $part = "body";
-        $vars = array("name" => "Jeremy");
-
-        $emailTemplateManager = $this->get('rj_email.email_template.manager');
-
-        $template = new EmailTemplate;
-        $template->setName('test');
-        $template->translate('fr')->setBody("Hello #{name}!");
-        //$em->persist($template);
-        //$em->flush();
-
-
-        $message = new Message($response['subject'], $response['body']);
-        $message->setFrom('jeremy@opencandy.com')
-            ->setTo('jeremy@opencandy.com')
-            ;
-        $this->get('mailer')->send($message);
-
-        $response = $emailTemplateManager->renderEmail($templateName, $locale, $vars);
-        return new Response($response['body'], 200, array(
-            'Content-Type' => "text/html"
         ));
     }
 }
