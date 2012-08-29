@@ -16,6 +16,15 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
         $this->manager = $manager;
     }
 
+    /**
+     * Gets the source code of a template, given its name.
+     *
+     * @param string $name The name of the template to load
+     *
+     * @return string The template source code
+     *
+     * @throws Twig_Error_Loader When $name is not found
+     */
     public function getSource($name)
     {
         list($name, $locale, $part) = $this->parse($name);
@@ -26,6 +35,15 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
         return $source;
     }
 
+    /**
+     * Gets the cache key to use for the cache for a given template name.
+     *
+     * @param string $name The name of the template to load
+     *
+     * @return string The cache key
+     *
+     * @throws Twig_Error_Loader When $name is not found
+     */
     public function getCacheKey($fullName)
     {
         list($name, ) = $this->parse($fullName);
@@ -39,6 +57,16 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
             . '#' . $template->getUpdatedAt()->getTimestamp();
     }
 
+    /**
+     * Returns true if the template is still fresh.
+     *
+     * @param string    $name The template name
+     * @param timestamp $time The last modification time of the cached template
+     *
+     * @return Boolean true if the template is fresh, false otherwise
+     *
+     * @throws Twig_Error_Loader When $name is not found
+     */
     public function isFresh($name, $time)
     {
         list($name, ) = $this->parse($name);
