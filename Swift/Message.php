@@ -31,15 +31,6 @@ class Message extends \Swift_Message
         if (isset($parameters['body'])) {
             $message->setBody($parameters['body']);
         }
-        if (isset($parameters['fromEmail'])) {
-            if (isset($parameters['fromName'])) {
-                $message->setFrom(array(
-                    $parameters['fromEmail'] => $parameters['fromName']
-                ));
-            } else {
-                $message->setFrom($parameters['fromEmail']);
-            }
-        }
         if (isset($parameters['contentType'])) {
             $message->setContentType($parameters['contentType']);
         }
