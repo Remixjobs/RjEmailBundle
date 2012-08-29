@@ -40,11 +40,11 @@ public function registerBundles()
 
 ### Step 3: Configuration
 
-Configure the bundle using the dic configuration file
+Configure the bundle using the dic configuration file :
 ```php
 rj_email:
     custom_loader: true
-    variation: b
+	locales: [en, fr, de, es]
 ```
 
 custom_loader:
@@ -109,8 +109,7 @@ PS : If you are using Sonata, a new menu will appear from the dashboard
 called Emails.
 
 
-Sending an email from a Controller
-----------------------------------
+### Sending an email from a Controller
 To retrieve an EmailTemplate from a controller you can do :
 ```php
 $this->get('rj_email.email_template_manager')->renderEmail($templateName, $locale = null, $vars = array(), Message $message = null);
