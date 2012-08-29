@@ -22,6 +22,33 @@ class Message extends \Swift_Message
         return $this->uniqueId;
     }
 
+    public static function fromArray($parameters)
+    {
+        $message = new static();
+        if (isset($parameters['subject'])) {
+            $message->setSubject($parameters['subject']);
+        }
+        if (isset($parameters['body'])) {
+            $message->setBody($parameters['body']);
+        }
+        if (isset($parameters['fromEmail'])) {
+            if (isset($parameters['fromName'])) {
+                $message->setFrom(array(
+                    $parameters['fromEmail'] => $parameters['fromName']
+                ));
+            } else {
+                $message->setFrom($parameters['fromEmail']);
+            }
+        }
+        if (isset($parameters['contentType'])) {
+            $message->setContentType($parameters['contentType']);
+        }
+        if (isset($parameters['charset'])) {
+            $message->setCharset($parameters['charset']);
+        }
+        return $message;
+    }
+
     protected function generateUniqueId()
     {
         return bin2hex(pack('d', microtime(true))); //. Random::generateToken();
