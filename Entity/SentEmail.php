@@ -10,7 +10,7 @@ use Rj\EmailBundle\Swift\Message;
 /**
  * Rj\MailBundle\Entity\SentEmail
  *
- * @ORM\Table()
+ * @ORM\Table(name="sent_email")
  * @ORM\Entity
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  */
@@ -47,14 +47,14 @@ class SentEmail
     /**
      * @var string $subject
      *
-     * @ORM\Column(name="subject", type="string", length=255)
+     * @ORM\Column(name="subject", type="string", nullable=true, length=255)
      */
     private $subject;
 
     /**
      * @var text $body
      *
-     * @ORM\Column(name="body", type="text")
+     * @ORM\Column(name="body", type="text", nullable=true)
      */
     private $body;
 

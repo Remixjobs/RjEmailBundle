@@ -40,8 +40,11 @@ class EmailTemplateManager
         return $this->container->get('twig')->render($name, $vars);
     }
 
-    public function renderEmail($templateName, $locale, $vars, Message $message = null)
+    public function renderEmail($templateName, $locale = null, $vars = array(), Message $message = null)
     {
+        if (!$locale) {
+            $locale = $this->container->getParameter('rj_email.default_locale');
+        }
         if (!$template = $this->getTemplate($templateName)) {
             throw new \RuntimeException(sprintf("Email template %s doesn't exist", $templateName));
         }
@@ -67,8 +70,6 @@ class EmailTemplateManager
         );
 
         return array(
-            'fromName'  => $tr->getFromName(),
-            'fromEmail' => $tr->getFromEmail(),
             'subject'   => $subject,
             'body'      => $body,
         );

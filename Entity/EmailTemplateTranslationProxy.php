@@ -9,58 +9,33 @@ use Symfony\Component\Validator\Constraints\Email;
 
 class EmailTemplateTranslationProxy extends TranslationProxy
 {
-    public function setSubject($subject)
-    {
-        return $this->setTranslatedValue('subject', $subject);
-    }
-
     /**
      * @NotBlank
      */
-     //@TwigTemplate
     public function getSubject()
     {
         return $this->getTranslatedValue('subject');
     }
 
-    public function setBody($body)
+    public function setSubject($subject)
     {
-        return $this->setTranslatedValue('body', $body);
+        $this->setTranslatedValue('subject', $subject);
+
+        return $this;
     }
 
     /**
      * @NotBlank
      */
-     //* @TwigTemplate
     public function getBody()
     {
         return $this->getTranslatedValue('body');
     }
 
-    public function setFromEmail($fromEmail)
+    public function setBody($body)
     {
-        return $this->setTranslatedValue('fromEmail', $fromEmail);
-    }
+        $this->setTranslatedValue('body', $body);
 
-    /**
-     * @NotBlank
-     * @Email
-     */
-    public function getFromEmail()
-    {
-        return $this->getTranslatedValue('fromEmail');
-    }
-
-    public function setFromName($fromName)
-    {
-        return $this->setTranslatedValue('fromName', $fromName);
-    }
-
-    /**
-     * @NotBlank
-     */
-    public function getFromName()
-    {
-        return $this->getTranslatedValue('fromName');
+        return $this;
     }
 }

@@ -13,6 +13,7 @@ use Rj\EmailBundle\Entity\EmailTemplateTranslationProxy;
 
 /**
  * @ORM\Table(
+ *  name="email",
  *  indexes={@ORM\Index(name="name", columns={"name"})}
  * )
  * @ORM\Entity
@@ -33,7 +34,7 @@ class EmailTemplate
     /**
      * @var string $name
      *
-     * @ORM\Column(name="name", type="string", length=255)
+     * @ORM\Column(name="name", type="string", unique=true, length=255)
      * @Versioned
      */
     private $name;
@@ -58,6 +59,9 @@ class EmailTemplate
      * @ORM\OneToMany(targetEntity="EmailTemplateTranslation", mappedBy="translatable", cascade={"persist"})
      */
     private $translations;
+
+    //todo: From DIC
+    private $langs = array('en', 'fr', 'de');
 
     public function __construct()
     {
@@ -155,11 +159,9 @@ class EmailTemplate
      */
     public function getTranslationProxies()
     {
-        $langs = array('de', 'en', 'fr');
-
         $ret = array();
 
-        foreach ($langs as $lang) {
+        foreach ($this->langs as $lang) {
             $ret[$lang] = $this->translate($lang);
         }
 

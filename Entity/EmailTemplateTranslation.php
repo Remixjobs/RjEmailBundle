@@ -9,6 +9,7 @@ use Gedmo\Mapping\Annotation\Versioned;
 
 /**
  * @ORM\Table(
+ *  name="email_translation",
  *  indexes={@ORM\index(name="lookup_idx", columns={
  *   "locale", "translatable_id"
  *  })}
