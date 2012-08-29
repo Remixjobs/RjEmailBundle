@@ -5,36 +5,39 @@
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="rj_email.email_template.class">Rj\EmailBundle\Entity\EmailTemplate</parameter>
-        <parameter key="rj_email.sent_email.class">Rj\EmailBundle\Entity\SentEmail</parameter>
-        <parameter key="rj_email.loader.class">Twig_Loader_Chain</parameter>
+        <parameter key="rj_email.email_template_class">Rj\EmailBundle\Entity\EmailTemplate</parameter>
+        <parameter key="rj_email.sent_email_class">Rj\EmailBundle\Entity\SentEmail</parameter>
+        <parameter key="rj_email.loader_class">Twig_Loader_Chain</parameter>
     </parameters>
 
     <services>
-        <service id="rj_email.email_template.manager" class="Rj\EmailBundle\Entity\EmailTemplateManager">
+        <service id="rj_email.email_template" class="%rj_email.email_template_class%" scope="prototype">
+            <argument>%rj_email.locales%</argument>
+        </service>
+
+        <service id="rj_email.email_template_manager" class="Rj\EmailBundle\Entity\EmailTemplateManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument>%rj_email.email_template.class%</argument>
+            <argument>%rj_email.email_template_class%</argument>
             <argument type="service" id="service_container" />
-            <tag name="swiftmailer.plugin" alias="swifmailer_plugin" />
         </service>
 
         <service id="rj_email.email_template_loader" class="Rj\EmailBundle\Twig\EmailTemplateLoader">
-            <argument type="service" id="rj_email.email_template.manager" />
+            <argument type="service" id="rj_email.email_template_manager" />
         </service>
 
-        <service id="rj_email.twig_loader" class="%rj_email.loader.class%">
+        <service id="rj_email.twig_loader" class="%rj_email.loader_class%">
             <argument type="collection">
                 <argument type="service" id="rj_email.email_template_loader" />
             </argument>
-		</service>
+        </service>
 
-        <service id="rj_email.sent_email.manager" class="Rj\EmailBundle\Entity\SentEmailManager">
+        <service id="rj_email.sent_email_manager" class="Rj\EmailBundle\Entity\SentEmailManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
-            <argument>%rj_email.sent_email.class%</argument>
+            <argument>%rj_email.sent_email_class%</argument>
         </service>
 
         <service id="rj_email.message_send_listener" class="Rj\EmailBundle\Swift\Events\SendListener\MessageSendListener">
-            <argument type="service" id="rj_email.sent_email.manager" />
+            <argument type="service" id="rj_email.sent_email_manager" />
             <tag name="swiftmailer.plugin" alias="swifmailer_plugin" />
         </service>
     </services>

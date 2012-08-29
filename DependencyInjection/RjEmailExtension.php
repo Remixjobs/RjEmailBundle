@@ -17,7 +17,12 @@ class RjEmailExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        //var_dump($container->getParameter('session.default_locale'));
+        //exit;
         $container->setParameter('rj_email.custom_loader', $config['custom_loader']);
+        $container->setParameter('rj_email.default_locale', $config['default_locale']);
+        $container->setParameter('rj_email.locales', $config['locales']);
+        $container->setParameter('rj_email.emails', $config['emails']);
 
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
