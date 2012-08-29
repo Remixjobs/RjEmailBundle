@@ -29,12 +29,6 @@ class EmailTemplateAdmin extends Admin
     protected function configureFormFields(FormMapper $formMapper)
     {
         $type = new CallbackType(function($builder) {
-            $builder->add('fromName', 'text', array(
-                'label' => 'From (name)'
-            ));
-            $builder->add('fromEmail', 'email', array(
-                'label' => 'From (email)'
-            ));
             $builder->add('subject', 'text', array(
                 'label' => 'Subject'
             ));
