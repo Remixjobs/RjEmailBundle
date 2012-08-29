@@ -31,11 +31,14 @@ class TwigSwiftMailer implements MailerInterface
     {
         $template = $this->parameters['template']['confirmation'];
         $url = $this->router->generate('fos_user_registration_confirm', array('token' => $user->getConfirmationToken()), true);
+
+        $message = Message::newInstance();
         $rendered = $this->manager->renderEmail($template, null, array(
             'username' => $user->getUsername(),
             'confirmationUrl' =>  $url,
-        ));
-        $this->sendEmailMessage($rendered, $this->parameters['from_email']['confirmation'], $user->getEmail());
+        ), $message);
+
+        $this->sendEmailMessage($rendered, $this->parameters['from_email']['confirmation'], $user->getEmail(), $message);
     }
 
     public function sendResettingEmailMessage(UserInterface $user)
@@ -46,14 +49,18 @@ class TwigSwiftMailer implements MailerInterface
         $rendered = $this->manager->renderEmail($template, null, array(
             'username' => $user->getUsername(),
             'confirmationUrl' => $url,
-        ));
-        $this->sendEmailMessage($rendered, $this->parameters['from_email']['resetting'], $user->getEmail());
+        ), $message);
+
+        $this->sendEmailMessage($rendered, $this->parameters['from_email']['resetting'], $user->getEmail(), $message);
     }
 
-    protected function sendEmailMessage($renderedTemplate, $fromEmail, $toEmail)
+    protected function sendEmailMessage($renderedTemplate, $fromEmail, $toEmail, $message = null)
     {
-        $message = Message::newInstance()
-            ->setSubject($renderedTemplate['subject'])
+        if (!$message) {
+            $message = new Message();
+        }
+
+        $message->setSubject($renderedTemplate['subject'])
             ->setFrom($fromEmail)
             ->setTo($toEmail)
             ->setBody($renderedTemplate['body']);

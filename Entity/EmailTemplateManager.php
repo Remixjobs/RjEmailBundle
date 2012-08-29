@@ -7,20 +7,23 @@ use Doctrine\ORM\EntityRepository;
 use Rj\EmailBundle\Entity\EmailTemplate;
 use Rj\EmailBundle\Swift\Message;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 class EmailTemplateManager
 {
     protected $em;
     protected $class;
     protected $repository;
+    protected $router;
     protected $container;
     protected $cache;
 
-    public function __construct(EntityManager $em, $class, ContainerInterface $container)
+    public function __construct(EntityManager $em, $class, RouterInterface $router, ContainerInterface $container)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class);
+        $this->router = $router;
         $this->container = $container;
 
         $this->cache = array();
@@ -34,7 +37,6 @@ class EmailTemplateManager
     public function renderTemplate($templateName, $locale, $part, $vars)
     {
         $name = "email_template:$templateName:$locale:$part";
-
         $vars['locale'] = $locale;
 
         return $this->container->get('twig')->render($name, $vars);
@@ -51,6 +53,7 @@ class EmailTemplateManager
 
         if ($message && $id = $message->getUniqueId()) {
             $vars['unique_id'] = $id;
+            $vars['email_url'] = $this->router->generate('rj_email_view_online', array('unique_id' => $id), true);
         }
 
         $tr = $this->getTemplateTranslation($template, $locale);

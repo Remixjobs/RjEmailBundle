@@ -18,6 +18,7 @@
         <service id="rj_email.email_template_manager" class="Rj\EmailBundle\Entity\EmailTemplateManager">
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument>%rj_email.email_template_class%</argument>
+			<argument type="service" id="router" />
             <argument type="service" id="service_container" />
         </service>
 

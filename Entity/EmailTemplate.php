@@ -19,6 +19,7 @@ use Rj\EmailBundle\Entity\EmailTemplateTranslationProxy;
  * @ORM\Entity
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
  * @Loggable
+ * @ORM\HasLifecycleCallbacks
  */
 class EmailTemplate
 {
@@ -175,6 +176,23 @@ class EmailTemplate
 
     public function setTranslationProxies()
     {
+    }
+
+    /**
+     * @ORM\PrePersist
+     */
+    public function beforePersist()
+    {
+        $this->setCreatedAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function beforeUpdate()
+    {
+        $this->setUpdatedAt(new \DateTime());
     }
 
     public function __toString()
