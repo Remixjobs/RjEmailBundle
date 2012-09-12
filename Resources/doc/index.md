@@ -33,7 +33,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-        new Rj\EmailBundle(),
+        new Rj\EmailBundle\RjEmailBundle(),
     );
 }
 ```
