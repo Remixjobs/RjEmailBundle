@@ -61,9 +61,6 @@ class EmailTemplate
      */
     private $translations;
 
-    //todo: From DIC
-    private $langs = array('en', 'fr', 'de');
-
     public function __construct()
     {
         $this->translations = new ArrayCollection;
@@ -160,13 +157,7 @@ class EmailTemplate
      */
     public function getTranslationProxies()
     {
-        $ret = array();
-
-        foreach ($this->langs as $lang) {
-            $ret[$lang] = $this->translate($lang);
-        }
-
-        return $ret;
+        return new EmailTemplateTranslationProxyProxy($this);
     }
 
     public function getEnTranslation()

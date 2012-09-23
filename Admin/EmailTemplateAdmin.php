@@ -13,6 +13,12 @@ class EmailTemplateAdmin extends Admin
 {
     protected $baseRouteName = 'email_template';
     protected $baseRoutePattern = 'email_template';
+    protected $locales;
+
+    public function setLocales(array $locales)
+    {
+        $this->locales = $locales;
+    }
 
     //show
     protected function configureShowField(ShowMapper $showMapper)
@@ -28,23 +34,35 @@ class EmailTemplateAdmin extends Admin
     //add
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $type = new CallbackType(function($builder) {
-            $builder->add('subject', 'text', array(
-                'label' => 'Subject'
-            ));
-            $builder->add('body', 'textarea', array(
-                'label' => 'Body'
-            ));
-        });
-
         $formMapper
             ->with('Email Templates')
                 ->add('name')
-                ->add('translationProxies', 'collection', array(
-                    'type' => $type
-                ))
             ->end()
-        ;
+            ;
+
+        $locales = $this->locales;
+
+        foreach ($locales as $locale) {
+            $formMapper
+                ->with(sprintf("Subject", $locale))
+                    ->add(sprintf("translationProxies_%s_subject", $locale), 'text', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].subject', $locale),
+                    ))
+                ->end()
+                ;
+        }
+
+        foreach ($locales as $locale) {
+            $formMapper
+                ->with(sprintf("Body", $locale))
+                    ->add(sprintf("translationProxies_%s_body", $locale), 'textarea', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].body', $locale),
+                    ))
+                ->end()
+                ;
+        }
     }
 
     //list
