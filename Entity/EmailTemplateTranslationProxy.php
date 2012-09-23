@@ -38,4 +38,27 @@ class EmailTemplateTranslationProxy extends TranslationProxy
 
         return $this;
     }
+
+    public function setFromEmail($fromEmail)
+    {
+        return $this->setTranslatedValue('fromEmail', $fromEmail);
+    }
+
+    /**
+     * @Email
+     */
+    public function getFromEmail()
+    {
+        return $this->getTranslatedValue('fromEmail');
+    }
+
+    public function setFromName($fromName)
+    {
+        return $this->setTranslatedValue('fromName', $fromName);
+    }
+
+    public function getFromName()
+    {
+        return $this->getTranslatedValue('fromName');
+    }
 }

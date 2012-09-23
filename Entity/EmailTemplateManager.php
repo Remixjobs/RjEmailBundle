@@ -17,14 +17,19 @@ class EmailTemplateManager
     protected $router;
     protected $container;
     protected $cache;
+    protected $defaultLocale;
+    protected $defaultFromName;
+    protected $defaultFromEmail;
 
-    public function __construct(EntityManager $em, $class, RouterInterface $router, ContainerInterface $container)
+    public function __construct(EntityManager $em, $class, RouterInterface $router, ContainerInterface $container, $defaultFromName, $defaultFromEmail)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class);
         $this->router = $router;
         $this->container = $container;
+        $this->defaultFromName = $defaultFromName;
+        $this->defaultFromEmail = $defaultFromEmail;
 
         $this->cache = array();
     }
@@ -75,6 +80,8 @@ class EmailTemplateManager
         return array(
             'subject'   => $subject,
             'body'      => $body,
+            'fromName'  => $tr->getFromName() ?: $this->defaultFromName,
+            'fromEmail' => $tr->getFromEmail() ?: $this->defaultFromEmail,
         );
     }
 
