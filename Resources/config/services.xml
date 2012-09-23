@@ -20,6 +20,8 @@
             <argument>%rj_email.email_template_class%</argument>
 			<argument type="service" id="router" />
             <argument type="service" id="service_container" />
+            <argument>%rj_email.default_from_name%</argument>
+            <argument>%rj_email.default_from_email%</argument>
         </service>
 
         <service id="rj_email.email_template_loader" class="Rj\EmailBundle\Twig\EmailTemplateLoader">

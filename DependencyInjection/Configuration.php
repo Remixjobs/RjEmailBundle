@@ -19,6 +19,8 @@ class Configuration implements ConfigurationInterface
         $rootNode->children()
             ->scalarNode('custom_loader')->defaultValue(true)->end()
             ->scalarNode('default_locale')->defaultValue('en')->end()
+            ->scalarNode('default_from_name')->defaultNull()->end()
+            ->scalarNode('default_from_email')->defaultNull()->end()
             ->arrayNode('locales')
                 ->isRequired()
                 ->prototype('scalar')->end()

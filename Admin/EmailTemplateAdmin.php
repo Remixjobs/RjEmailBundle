@@ -63,6 +63,30 @@ class EmailTemplateAdmin extends Admin
                 ->end()
                 ;
         }
+
+        foreach ($locales as $locale) {
+            $formMapper
+                ->with(sprintf("From name", $locale))
+                    ->add(sprintf("translationProxies_%s_fromName", $locale), 'text', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].fromName', $locale),
+                        'required' => false,
+                    ))
+                ->end()
+                ;
+        }
+
+        foreach ($locales as $locale) {
+            $formMapper
+                ->with(sprintf("From email", $locale))
+                    ->add(sprintf("translationProxies_%s_fromEmail", $locale), 'email', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].fromEmail', $locale),
+                        'required' => false,
+                    ))
+                ->end()
+                ;
+        }
     }
 
     //list
