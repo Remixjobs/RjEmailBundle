@@ -23,7 +23,7 @@ class CallbackType extends AbstractType
     public function getDefaultOptions(array $options)
     {
         return array(
-            'data_class' => 'Rj\EmailBundle\Entity\EmailTemplateTranslationProxy'
+            'data_class' => null,
         );
     }
 

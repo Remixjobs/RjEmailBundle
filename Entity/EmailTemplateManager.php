@@ -17,14 +17,19 @@ class EmailTemplateManager
     protected $router;
     protected $container;
     protected $cache;
+    protected $defaultLocale;
+    protected $defaultFromName;
+    protected $defaultFromEmail;
 
-    public function __construct(EntityManager $em, $class, RouterInterface $router, ContainerInterface $container)
+    public function __construct(EntityManager $em, $class, RouterInterface $router, ContainerInterface $container, $defaultFromName, $defaultFromEmail)
     {
         $this->em = $em;
         $this->repository = $em->getRepository($class);
         $this->class = $em->getClassMetadata($class);
         $this->router = $router;
         $this->container = $container;
+        $this->defaultFromName = $defaultFromName;
+        $this->defaultFromEmail = $defaultFromEmail;
 
         $this->cache = array();
     }
@@ -42,31 +47,30 @@ class EmailTemplateManager
         return $this->container->get('twig')->render($name, $vars);
     }
 
-    public function renderEmail($templateName, $locale = null, $vars = array(), Message $message = null)
+    public function renderFromEmailTemplate(EmailTemplate $template, $locale = null, $vars = array(), Message $message = null)
     {
         if (!$locale) {
             $locale = $this->container->getParameter('rj_email.default_locale');
         }
-        if (!$template = $this->getTemplate($templateName)) {
-            throw new \RuntimeException(sprintf("Email template %s doesn't exist", $templateName));
-        }
 
         if ($message && $id = $message->getUniqueId()) {
             $vars['unique_id'] = $id;
-            $vars['email_url'] = $this->router->generate('rj_email_view_online', array('unique_id' => $id), true);
+            if ($this->router->getRouteCollection()->get('rj_email_view_online')) {
+                $vars['email_url'] = $this->router->generate('rj_email_view_online', array('unique_id' => $id), true);
+            }
         }
 
         $tr = $this->getTemplateTranslation($template, $locale);
 
         $subject = $this->renderTemplate(
-            $templateName
+            $template->getName()
             , $locale
             , 'subject'
             , $vars
         );
 
         $body = $this->renderTemplate(
-            $templateName
+            $template->getName()
             , $locale
             , 'body'
             , $vars
@@ -75,7 +79,17 @@ class EmailTemplateManager
         return array(
             'subject'   => $subject,
             'body'      => $body,
+            'fromName'  => $tr->getFromName() ?: $this->defaultFromName,
+            'fromEmail' => $tr->getFromEmail() ?: $this->defaultFromEmail,
         );
+    }
+
+    public function renderEmail($templateName, $locale = null, $vars = array(), Message $message = null)
+    {
+        if (!$template = $this->getTemplate($templateName)) {
+            throw new \RuntimeException(sprintf("Email template %s doesn't exist", $templateName));
+        }
+        return $this->renderFromEmailTemplate($template, $locale, $vars, $message);
     }
 
     public function getTemplate($name)
