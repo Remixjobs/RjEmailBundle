@@ -13,6 +13,9 @@
             <argument />
             <argument>Rj\EmailBundle\Entity\EmailTemplate</argument>
             <argument>RjEmailBundle:EmailTemplateAdmin</argument>
+            <call method="setLocales">
+                <argument>%rj_email.locales%</argument>
+            </call>
         </service>
     </services>
 </container>
