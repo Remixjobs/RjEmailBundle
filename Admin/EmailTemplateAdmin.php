@@ -8,6 +8,8 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Admin\Admin;
 use Rj\EmailBundle\Form\Type\CallbackType;
+use Knp\Menu\ItemInterface as MenuItemInterface;
+use Sonata\AdminBundle\Route\RouteCollection;
 
 class EmailTemplateAdmin extends Admin
 {
@@ -116,5 +118,27 @@ class EmailTemplateAdmin extends Admin
             ->add('createdAt')
             ->add('updatedAt')
             ;
+    }
+
+    protected function configureSideMenu(MenuItemInterface $menu, $action, Admin $childAdmin = null)
+    {
+        if ('edit' == $action) {
+            $item = $this->menuFactory->createItem('send_test', array(
+                'uri' => 'javascript:void(send_test())',
+                'label' => 'Send test email',
+            ));
+            $menu->addChild($item);
+        }
+    }
+
+    public function setTemplates(array $templates)
+    {
+        parent::setTemplates($templates);
+        $this->setTemplate('edit', 'RjEmailBundle:EmailTemplate:edit.html.twig');
+    }
+
+    public function configureRoutes(RouteCollection $collection)
+    {
+        $collection->add('send_test', $this->getRouterIdParameter().'/send_test');
     }
 }

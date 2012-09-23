@@ -1,0 +1,101 @@
+
+{% extends "SonataAdminBundle:CRUD:edit.html.twig" %}
+
+{% block form %}
+    {{ parent() }}
+    <script type="text/javascript">
+        {% autoescape true js %}
+            (function() {
+                function getSavedData() {
+                    var savedData;
+
+                    if (window.localStorage && (savedData = localStorage['admin_email_template_send_test_{{object.id}}'])) {
+                        try {
+                            savedData = JSON.parse(savedData);
+                        } catch(E) {
+                            console.log(E);
+                            savedData = null;
+                        }
+                    }
+                    if (!savedData) {
+                        savedData = {
+                            variables: "{\n\"foo\": \"bar\",\n\"baz\": \"qux\"\n}",
+                            to: "test@example.com\n",
+                        };
+                    }
+
+                    return savedData;
+                }
+
+                function setSavedData(data) {
+                    if (window.localStorage) {
+                        localStorage['admin_email_template_send_test_{{object.id}}'] = JSON.stringify(data);
+                    }
+                }
+
+                function saveData(sendForm) {
+
+                    var savedData = {
+                        variables: sendForm.find('[name="send_test[variables]"]').val(),
+                        to: sendForm.find('[name="send_test[to]"]').val()
+                    };
+                    setSavedData(savedData);
+                }
+
+                function send_test() {
+
+                    var form = $('.sonata-ba-form form');
+                    var url = form.attr('action').replace(/edit/, 'send_test');
+                    var savedData = getSavedData();
+                    
+                    $.ajax(url, {
+                        type: 'GET',
+                        headers: {
+                            Accept: 'application/json'
+                        }
+                    }).done(function(data) {
+                        var sendForm = $(data.html).appendTo('body');
+                        sendForm.dialog({
+                            minWidth: 400
+                        });
+
+                        sendForm.find('[name="send_test[variables]"]')
+                            .val(savedData.variables)
+                            .css('height', '200px');
+                        sendForm.find('[name="send_test[to]"]')
+                            .val(savedData.to)
+                            .css('height', '100px');
+
+                        sendForm.on('submit', 'form', function(e) {
+                            e.preventDefault();
+
+                            var data = $(this).serialize();
+                            data += "&" + form.serialize();
+
+                            $.ajax(url, {
+                                type: 'POST',
+                                headers: {
+                                    Accept: 'application/json'
+                                },
+                                data: data
+                            }).done(function(data) {
+                                sendForm.dialog('close');
+                            }).fail(function(xhr) {
+                                var data = $.parseJSON(xhr.responseText);
+                                alert(data.error);
+                            });
+
+                            saveData(sendForm);
+                        }).on('change', function(e) {
+                            saveData(sendForm);
+                        });
+
+                    });
+                }
+
+                window.send_test = send_test;
+            }());
+        {% endautoescape %}
+    </script>
+{% endblock form %}
+
