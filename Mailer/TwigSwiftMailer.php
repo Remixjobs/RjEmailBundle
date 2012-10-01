@@ -44,8 +44,9 @@ class TwigSwiftMailer implements MailerInterface
     public function sendResettingEmailMessage(UserInterface $user)
     {
         $template = $this->parameters['template']['resetting'];
-
         $url = $this->router->generate('fos_user_resetting_reset', array('token' => $user->getConfirmationToken()), true);
+
+        $message = Message::newInstance();
         $rendered = $this->manager->renderEmail($template, null, array(
             'username' => $user->getUsername(),
             'confirmationUrl' => $url,
