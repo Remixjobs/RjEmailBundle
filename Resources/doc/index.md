@@ -93,11 +93,11 @@ and for resetting email (by default it's resetting).
 PS: The custom mailer will only works if you are using Swift to send emails.
 
 
-By running the command rj:email:import, it will automatically imports
+By running the command rj:email:import-fosuserbundle, it will automatically imports
 FOSUserBundle emails from FOSUserBUndle translation files for all
 locales you have specified in rj_email.locales parameters.
 ```php
-./app/console rj:email:import
+./app/console rj:email:import-fosuserbundle
 ```
 
 You can use Twig to edit emails.
