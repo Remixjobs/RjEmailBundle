@@ -39,7 +39,7 @@ class Configuration implements ConfigurationInterface
                     ->canBeUnset()
                     ->children()
                         ->scalarNode('confirmation')->defaultValue('confirmation')->end()
-                        ->scalarNode('resetting')->defaultValue('confirmation')->end()
+                        ->scalarNode('resetting')->defaultValue('resetting')->end()
                     ->end()
                 ->end()
             ->end();
