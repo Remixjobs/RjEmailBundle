@@ -37,6 +37,9 @@ class Message extends \Swift_Message
         if (isset($parameters['charset'])) {
             $message->setCharset($parameters['charset']);
         }
+        if (isset($parameters['fromEmail'])) {
+            $message->setFrom($parameters['fromEmail'], isset($parameters['fromName'])? $parameters['fromName']: null);
+        }
         return $message;
     }
 
