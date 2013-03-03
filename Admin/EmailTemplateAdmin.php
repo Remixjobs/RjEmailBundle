@@ -7,6 +7,7 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\AdminBundle\Show\ShowMapper;
 use Sonata\AdminBundle\Admin\Admin;
+use Sonata\AdminBundle\Admin\AdminInterface;
 use Rj\EmailBundle\Form\Type\CallbackType;
 use Knp\Menu\ItemInterface as MenuItemInterface;
 use Sonata\AdminBundle\Route\RouteCollection;
@@ -120,7 +121,7 @@ class EmailTemplateAdmin extends Admin
             ;
     }
 
-    protected function configureSideMenu(MenuItemInterface $menu, $action, Admin $childAdmin = null)
+    protected function configureSideMenu(MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
     {
         if ('edit' == $action) {
             $item = $this->menuFactory->createItem('send_test', array(
