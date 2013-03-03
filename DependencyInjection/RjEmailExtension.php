@@ -17,8 +17,6 @@ class RjEmailExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
-        //var_dump($container->getParameter('session.default_locale'));
-        //exit;
         $container->setParameter('rj_email.custom_loader', $config['custom_loader']);
         $container->setParameter('rj_email.default_locale', $config['default_locale']);
         $container->setParameter('rj_email.locales', $config['locales']);
@@ -29,8 +27,9 @@ class RjEmailExtension extends Extension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        //todo: only if there is fosuserbundle
-        $loader->load('mailer.xml');
+        if (class_exists('FOS\UserBundle\Model\User')) {
+            $loader->load('mailer.xml');
+        }
 
         if (class_exists("Sonata\AdminBundle\Admin\Admin")) {
             $loader->load('sonata.xml');
