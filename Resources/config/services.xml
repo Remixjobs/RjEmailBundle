@@ -7,7 +7,10 @@
     <parameters>
         <parameter key="rj_email.email_template_class">Rj\EmailBundle\Entity\EmailTemplate</parameter>
         <parameter key="rj_email.sent_email_class">Rj\EmailBundle\Entity\SentEmail</parameter>
-        <parameter key="rj_email.loader_class">Twig_Loader_Chain</parameter>
+        <parameter key="rj_email.twig.loader_chain.class">Twig_Loader_Chain</parameter>
+
+        <parameter key="rj_email.twig.loader_email_template.class">Rj\EmailBundle\Twig\EmailTemplateLoader</parameter>
+        
     </parameters>
 
     <services>
@@ -24,13 +27,20 @@
             <argument>%rj_email.default_from_email%</argument>
         </service>
 
-        <service id="rj_email.email_template_loader" class="Rj\EmailBundle\Twig\EmailTemplateLoader">
+        <service id="rj_email.twig" class="%twig.class%" parent="twig">
+            <call method="setLoader">
+                <argument type="service" id="rj_email.twig.loader" />
+            </call>
+        </service>
+
+        <service id="rj_email.twig.loader_email_template" class="%rj_email.twig.loader_email_template.class%">
             <argument type="service" id="rj_email.email_template_manager" />
         </service>
 
-        <service id="rj_email.twig_loader" class="%rj_email.loader_class%">
+        <service id="rj_email.twig.loader" class="%rj_email.twig.loader_chain.class%">
             <argument type="collection">
-                <argument type="service" id="rj_email.email_template_loader" />
+                <argument type="service" id="rj_email.twig.loader_email_template" />
+                <argument type="service" id="twig.loader" />
             </argument>
         </service>
 
