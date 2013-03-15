@@ -44,7 +44,7 @@ class EmailTemplateManager
         $name = "email_template:$templateName:$locale:$part";
         $vars['locale'] = $locale;
 
-        return $this->container->get('twig')->render($name, $vars);
+        return $this->container->get('rj_email.twig')->render($name, $vars);
     }
 
     public function renderFromEmailTemplate(EmailTemplate $template, $locale = null, $vars = array(), Message $message = null)
