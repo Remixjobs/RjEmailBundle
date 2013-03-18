@@ -27,6 +27,12 @@ class SendEmail
 
     /**
      * @Assert\NotBlank
+     * @Assert\Email
+     */
+    public $toEmail;
+    
+    /**
+     * @Assert\NotBlank
      */
     public $fromName;
 
