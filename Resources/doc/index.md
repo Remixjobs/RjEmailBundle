@@ -43,16 +43,8 @@ public function registerBundles()
 Configure the bundle using the dic configuration file :
 ```php
 rj_email:
-    custom_loader: true
-	locales: [en, fr, de, es]
+    locales: [en, fr, de, es]
 ```
-
-custom_loader:
-(default value true)
-Allow the bundle to override the default twig loader (FileSystemLoader) to use
-Twig_Loader_Chain to chain our custom Twig Loader (TemplateLoader) and FileSystemLoader.
-If the template is not found in the DB, it will look for it using the FileSystemLoader.
-You can disable the loader with custom_loader: false
 
 locales:
 Array of available locales for your application.

@@ -17,7 +17,6 @@ class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->root('rj_email');
 
         $rootNode->children()
-            ->scalarNode('custom_loader')->defaultValue(true)->end()
             ->scalarNode('default_locale')->defaultValue('en')->end()
             ->scalarNode('default_from_name')->defaultValue('ACME Corporation')->end()
             ->scalarNode('default_from_email')->defaultValue('acme@example.com')->end()
