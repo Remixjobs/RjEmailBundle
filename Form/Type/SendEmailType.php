@@ -3,7 +3,6 @@ namespace Rj\EmailBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -53,10 +52,13 @@ class SendEmailType extends AbstractType
     {
         $this->formFactory = $builder->getFormFactory();
         
-        $builder->add('locale', 'choice', array(
-            'choices' => $this->locales,
-            'label' => 'Language'
-        ));
+        $builder
+            ->add('toEmail', 'email')
+            ->add('locale', 'choice', array(
+                'choices' => $this->locales,
+                'label' => 'Language'
+            ))
+        ;
 
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildTemplateField'));
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildSubjectFields'));
@@ -223,9 +225,6 @@ class SendEmailType extends AbstractType
 
             $form->add($this->formFactory->createNamed('fromEmail', 'email'));
             $data['fromEmail'] = $translatedTemplate->getFromEmail();
-
-            $form->add($this->formFactory->createNamed('toEmail', 'email'));
-            $data['toEmail'] = $translatedTemplate->getFromEmail();
         }
 
         $event->setData($data);
