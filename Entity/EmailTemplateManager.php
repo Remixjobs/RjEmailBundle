@@ -89,6 +89,11 @@ class EmailTemplateManager
         if (!$template = $this->getTemplate($templateName)) {
             throw new \RuntimeException(sprintf("Email template %s doesn't exist", $templateName));
         }
+
+        if ($template->getContentType() && $message) {
+            $message->setContentType($template->getContentType());
+        }
+
         return $this->renderFromEmailTemplate($template, $locale, $vars, $message);
     }
 

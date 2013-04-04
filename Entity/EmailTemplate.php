@@ -39,8 +39,19 @@ class EmailTemplate
      * @ORM\Column(name="name", type="string", unique=true, length=255)
      * 
      * @Gedmo\Versioned
+     * 
+     * @Assert\NotBlank
      */
     private $name;
+
+    /**
+     * @var string $contentType
+     *
+     * @ORM\Column(name="content_type", type="string", length=64)
+     *
+     * @Gedmo\Versioned
+     */
+    private $contentType;
 
     /**
      * @var \DateTime $createdAt
@@ -68,6 +79,7 @@ class EmailTemplate
     public function __construct()
     {
         $this->translations = new ArrayCollection;
+        $this->contentType = 'text/html';
     }
 
     /**
@@ -95,6 +107,22 @@ class EmailTemplate
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->contentType;
+    }
+
+    /**
+     * @param string $contentType
+     */
+    public function setContentType($contentType)
+    {
+        $this->contentType = $contentType;
     }
 
     /**

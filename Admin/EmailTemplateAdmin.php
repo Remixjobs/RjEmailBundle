@@ -40,8 +40,9 @@ class EmailTemplateAdmin extends Admin
         $formMapper
             ->with('Email Templates')
                 ->add('name')
+                ->add('contentType')
             ->end()
-            ;
+        ;
 
         $locales = $this->locales;
 
@@ -53,7 +54,7 @@ class EmailTemplateAdmin extends Admin
                         'property_path' => sprintf('translationProxies[%s].subject', $locale),
                     ))
                 ->end()
-                ;
+            ;
         }
 
         foreach ($locales as $locale) {
@@ -64,7 +65,7 @@ class EmailTemplateAdmin extends Admin
                         'property_path' => sprintf('translationProxies[%s].body', $locale),
                     ))
                 ->end()
-                ;
+            ;
         }
 
         foreach ($locales as $locale) {
@@ -76,7 +77,7 @@ class EmailTemplateAdmin extends Admin
                         'required' => false,
                     ))
                 ->end()
-                ;
+            ;
         }
 
         foreach ($locales as $locale) {
@@ -88,7 +89,7 @@ class EmailTemplateAdmin extends Admin
                         'required' => false,
                     ))
                 ->end()
-                ;
+            ;
         }
     }
 
@@ -105,7 +106,6 @@ class EmailTemplateAdmin extends Admin
                     'view' => array(),
                     'edit' => array(),
                     'delete' => array(),
-                    //'send' => array(),
                 )
             ))
         ;
@@ -118,7 +118,7 @@ class EmailTemplateAdmin extends Admin
             ->add('name')
             ->add('createdAt')
             ->add('updatedAt')
-            ;
+        ;
     }
 
     protected function configureSideMenu(MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)
