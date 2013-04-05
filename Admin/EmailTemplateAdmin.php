@@ -40,7 +40,6 @@ class EmailTemplateAdmin extends Admin
         $formMapper
             ->with('Email Templates')
                 ->add('name')
-                ->add('contentType')
             ->end()
         ;
 
@@ -59,10 +58,16 @@ class EmailTemplateAdmin extends Admin
 
         foreach ($locales as $locale) {
             $formMapper
-                ->with(sprintf("Body", $locale))
+                ->with(sprintf("Text body", $locale))
                     ->add(sprintf("translationProxies_%s_body", $locale), 'textarea', array(
                         'label' => $locale,
                         'property_path' => sprintf('translationProxies[%s].body', $locale),
+                    ))
+                ->end()
+                ->with(sprintf("Html body", $locale))
+                    ->add(sprintf("translationProxies_%s_body_html", $locale), 'textarea', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].bodyHtml', $locale),
                     ))
                 ->end()
             ;

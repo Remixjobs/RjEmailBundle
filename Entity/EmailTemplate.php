@@ -45,15 +45,6 @@ class EmailTemplate
     private $name;
 
     /**
-     * @var string $contentType
-     *
-     * @ORM\Column(name="content_type", type="string", length=64)
-     *
-     * @Gedmo\Versioned
-     */
-    private $contentType;
-
-    /**
      * @var \DateTime $createdAt
      *
      * @ORM\Column(name="createdAt", type="datetime")
@@ -145,7 +136,7 @@ class EmailTemplate
     {
         return new EmailTemplateTranslationProxy($this
             , $locale
-            , array('subject', 'body')
+            , array('subject', 'body', 'bodyHtml')
             , __CLASS__ . 'Translation'
             , $this->translations
         );

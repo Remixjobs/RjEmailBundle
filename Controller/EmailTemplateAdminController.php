@@ -93,7 +93,7 @@ class EmailTemplateAdminController extends CRUDController
             ->setTo($to)
             ->setSubject($ret['subject'])
             ->setBody($ret['body'], 'text/html', 'utf-8')
-            ;
+        ;
 
         $this->get('mailer')->send($message);
     }
