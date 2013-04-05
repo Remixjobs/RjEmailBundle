@@ -101,22 +101,6 @@ class EmailTemplate
     }
 
     /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->contentType;
-    }
-
-    /**
-     * @param string $contentType
-     */
-    public function setContentType($contentType)
-    {
-        $this->contentType = $contentType;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getCreatedAt()
