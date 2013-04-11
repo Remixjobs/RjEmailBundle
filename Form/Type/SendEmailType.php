@@ -63,11 +63,13 @@ class SendEmailType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildTemplateField'));
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildSubjectFields'));
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildBodyFields'));
+        $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildBodyHtmlFields'));
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildEmailFields'));
         $builder->addEventListener(FormEvents::PRE_BIND, array($this, 'buildConfirmField'));
         
         $builder->addEventListener(FormEvents::BIND, array($this, 'convertSubjectVarsToArray'));
         $builder->addEventListener(FormEvents::BIND, array($this, 'convertBodyVarsToArray'));
+        $builder->addEventListener(FormEvents::BIND, array($this, 'convertBodyHtmlVarsToArray'));
     }
 
     /**
@@ -139,18 +141,7 @@ class SendEmailType extends AbstractType
      */
     public function convertSubjectVarsToArray(FormEvent $event)
     {
-        $data = $event->getData();        
-        if (isset($data->subjectVars) && is_array($data->subjectVars)) {
-            $subjectVars = array();
-            foreach ($data->subjectVars as $rawSubjectVar => $value) {
-                $propertyPath = new PropertyPath('['.str_replace(':' , '][', $rawSubjectVar).']');
-                $propertyPath->setValue($subjectVars, $value);
-            }
-
-            $data->subjectVars = $subjectVars; 
-        }
-
-        $event->setData($data);
+        $event->setData($event->getData(), 'subjectVars');
     }
 
     /**
@@ -158,18 +149,30 @@ class SendEmailType extends AbstractType
      */
     public function convertBodyVarsToArray(FormEvent $event)
     {
-        $data = $event->getData();
-        if (isset($data->bodyVars) && is_array($data->bodyVars)) {
-            $bodyVars = array();
-            foreach ($data->bodyVars as $rawSubjectVar => $value) {
-                $propertyPath = new PropertyPath('['.str_replace(':' , '][', $rawSubjectVar).']');
-                $propertyPath->setValue($bodyVars, $value);
+        $event->setData($event->getData(), 'bodyVars');
+    }
+
+    /**
+     * @param \Symfony\Component\Form\FormEvent $event
+     */
+    public function convertBodyHtmlVarsToArray(FormEvent $event)
+    {
+        $event->setData($event->getData(), 'bodyHtmlVars');
+    }
+
+    protected function convertTemplateVarsToArray($data, $varsPropertyName)
+    {
+        if (isset($data->$varsPropertyName) && is_array($data->$varsPropertyName)) {
+            $vars = array();
+            foreach ($data->$varsPropertyName as $rawVar => $value) {
+                $propertyPath = new PropertyPath('['.str_replace(':' , '][', $rawVar).']');
+                $propertyPath->setValue($vars, $value);
             }
 
-            $data->bodyVars = $bodyVars;
+            $data->$varsPropertyName = $vars;
         }
 
-        $event->setData($data);
+        return $data;
     }
 
     /**
@@ -212,6 +215,43 @@ class SendEmailType extends AbstractType
     /**
      * @param \Symfony\Component\Form\FormEvent $event
      */
+    public function buildBodyHtmlFields(FormEvent $event)
+    {
+        $data = $event->getData();
+        $form = $event->getForm();
+
+        if (isset($data['template']) && $template = $this->emailTemplateRepository->find($data['template'])) {
+            $translatedTemplate = $template->translate($data['locale']);
+
+            $form->add($this->formFactory->createNamed('bodyHtml', 'textarea', $translatedTemplate->getBodyHtml(), array(
+                'read_only' => true,
+                'virtual' => true,
+            )));
+            $data['bodyHtml'] = $translatedTemplate->getBodyHtml();
+
+            $matches = array();
+            if (preg_match_all('/\{\{\s*([^\}\s]+)\s*\}\}/', $translatedTemplate->getBodyHtml(), $matches)) {
+                $vars = array();
+                foreach ($matches[1] as $match) {
+                    $vars[str_replace('.' , ':', $match)] = '';
+                }
+
+                $form->add($this->formFactory->createNamed('body_html_vars', 'collection', null, array(
+                    'data' => $vars,
+                    'type' => 'text',
+                    'allow_add' => false,
+                    'allow_delete' => false,
+                    'property_path' => 'bodyHtmlVars'
+                )));
+            }
+        }
+
+        $event->setData($data);
+    }
+
+    /**
+     * @param \Symfony\Component\Form\FormEvent $event
+     */
     public function buildEmailFields(FormEvent $event)
     {
         $data = $event->getData();
@@ -221,10 +261,10 @@ class SendEmailType extends AbstractType
             $translatedTemplate = $template->translate($data['locale']);
 
             $form->add($this->formFactory->createNamed('fromName', 'text'));
-            $data['fromName'] = $translatedTemplate->getFromName();
+            $data['fromName'] = isset($data['fromName']) ? $data['fromName'] : $translatedTemplate->getFromName();
 
             $form->add($this->formFactory->createNamed('fromEmail', 'email'));
-            $data['fromEmail'] = $translatedTemplate->getFromEmail();
+            $data['fromName'] = isset($data['fromEmail']) ? $data['fromName'] : $translatedTemplate->getFromName();
         }
 
         $event->setData($data);
