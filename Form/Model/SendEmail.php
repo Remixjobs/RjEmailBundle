@@ -31,6 +31,11 @@ class SendEmail
     public $bodyVars;
 
     /**
+     * @var array
+     */
+    public $bodyHtmlVars;
+
+    /**
      * @var string
      *
      * @Assert\NotBlank
