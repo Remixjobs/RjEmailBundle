@@ -76,9 +76,17 @@ class EmailTemplateManager
             , $vars
         );
 
+        $bodyHtml = $this->renderTemplate(
+            $template->getName()
+            , $locale
+            , 'bodyHtml'
+            , $vars
+        );
+
         return array(
             'subject'   => $subject,
             'body'      => $body,
+            'bodyHtml' => $bodyHtml,
             'fromName'  => $tr->getFromName() ?: $this->defaultFromName,
             'fromEmail' => $tr->getFromEmail() ?: $this->defaultFromEmail,
         );
@@ -89,6 +97,7 @@ class EmailTemplateManager
         if (!$template = $this->getTemplate($templateName)) {
             throw new \RuntimeException(sprintf("Email template %s doesn't exist", $templateName));
         }
+
         return $this->renderFromEmailTemplate($template, $locale, $vars, $message);
     }
 

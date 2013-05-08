@@ -116,6 +116,8 @@ class EmailTemplateLoader implements \Twig_LoaderInterface
             return '{% autoescape false %}' . $translation->getSubject() . '{% endautoescape %}';
         case 'body':
             return $translation->getBody();
+        case 'bodyHtml':
+            return $translation->getBodyHtml();
         default:
             throw new \Twig_Error_Loader(sprintf("Invalid template part %s", $part));
         }
