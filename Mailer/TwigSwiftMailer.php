@@ -61,10 +61,13 @@ class TwigSwiftMailer implements MailerInterface
             $message = new Message();
         }
 
-        $message->setSubject($renderedTemplate['subject'])
+        $message
+            ->setSubject($renderedTemplate['subject'])
             ->setFrom($fromEmail)
             ->setTo($toEmail)
-            ->setBody($renderedTemplate['body']);
+            ->setBody($renderedTemplate['body'], 'text/plain')
+            ->addPart($renderedTemplate['bodyHtml'], 'text/html')
+        ;
 
         $this->mailer->send($message);
     }

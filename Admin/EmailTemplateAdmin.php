@@ -41,7 +41,7 @@ class EmailTemplateAdmin extends Admin
             ->with('Email Templates')
                 ->add('name')
             ->end()
-            ;
+        ;
 
         $locales = $this->locales;
 
@@ -53,18 +53,24 @@ class EmailTemplateAdmin extends Admin
                         'property_path' => sprintf('translationProxies[%s].subject', $locale),
                     ))
                 ->end()
-                ;
+            ;
         }
 
         foreach ($locales as $locale) {
             $formMapper
-                ->with(sprintf("Body", $locale))
+                ->with(sprintf("Text body", $locale))
                     ->add(sprintf("translationProxies_%s_body", $locale), 'textarea', array(
                         'label' => $locale,
                         'property_path' => sprintf('translationProxies[%s].body', $locale),
                     ))
                 ->end()
-                ;
+                ->with(sprintf("Html body", $locale))
+                    ->add(sprintf("translationProxies_%s_body_html", $locale), 'textarea', array(
+                        'label' => $locale,
+                        'property_path' => sprintf('translationProxies[%s].bodyHtml', $locale),
+                    ))
+                ->end()
+            ;
         }
 
         foreach ($locales as $locale) {
@@ -76,7 +82,7 @@ class EmailTemplateAdmin extends Admin
                         'required' => false,
                     ))
                 ->end()
-                ;
+            ;
         }
 
         foreach ($locales as $locale) {
@@ -88,7 +94,7 @@ class EmailTemplateAdmin extends Admin
                         'required' => false,
                     ))
                 ->end()
-                ;
+            ;
         }
     }
 
@@ -105,7 +111,6 @@ class EmailTemplateAdmin extends Admin
                     'view' => array(),
                     'edit' => array(),
                     'delete' => array(),
-                    //'send' => array(),
                 )
             ))
         ;
@@ -118,7 +123,7 @@ class EmailTemplateAdmin extends Admin
             ->add('name')
             ->add('createdAt')
             ->add('updatedAt')
-            ;
+        ;
     }
 
     protected function configureSideMenu(MenuItemInterface $menu, $action, AdminInterface $childAdmin = null)

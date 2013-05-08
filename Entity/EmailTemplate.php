@@ -2,13 +2,14 @@
 
 namespace Rj\EmailBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation\Timestampable;
 use Doctrine\Common\Collections\ArrayCollection;
-use Gedmo\Mapping\Annotation\Loggable;
-use Gedmo\Mapping\Annotation\Versioned;
-use Symfony\Component\Validator\Constraints\All;
-use Symfony\Component\Validator\Constraints\Valid;
+
+use Gedmo\Mapping\Annotation as Gedmo;
+
+
 use Rj\EmailBundle\Entity\EmailTemplateTranslationProxy;
 
 /**
@@ -18,8 +19,8 @@ use Rj\EmailBundle\Entity\EmailTemplateTranslationProxy;
  * )
  * @ORM\Entity
  * @ORM\ChangeTrackingPolicy("DEFERRED_EXPLICIT")
- * @Loggable
- * @ORM\HasLifecycleCallbacks
+ * 
+ * @Gedmo\Loggable
  */
 class EmailTemplate
 {
@@ -36,23 +37,28 @@ class EmailTemplate
      * @var string $name
      *
      * @ORM\Column(name="name", type="string", unique=true, length=255)
-     * @Versioned
+     * 
+     * @Gedmo\Versioned
+     * 
+     * @Assert\NotBlank
      */
     private $name;
 
     /**
-     * @var datetime $createdAt
+     * @var \DateTime $createdAt
      *
      * @ORM\Column(name="createdAt", type="datetime")
-     * @Timestampable(on="create")
+     * 
+     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
     /**
-     * @var datetime $updatedAt
+     * @var \DateTime $updatedAt
      *
      * @ORM\Column(name="updatedAt", type="datetime")
-     * @Timestampable(on="update")
+     * 
+     * @Gedmo\Timestampable(on="update")
      */
     private $updatedAt;
 
@@ -64,11 +70,10 @@ class EmailTemplate
     public function __construct()
     {
         $this->translations = new ArrayCollection;
+        $this->contentType = 'text/html';
     }
 
     /**
-     * Get id
-     *
      * @return integer
      */
     public function getId()
@@ -77,9 +82,8 @@ class EmailTemplate
     }
 
     /**
-     * Set name
-     *
      * @param string $name
+     * 
      * @return EmailTemplate
      */
     public function setName($name)
@@ -89,8 +93,6 @@ class EmailTemplate
     }
 
     /**
-     * Get name
-     *
      * @return string
      */
     public function getName()
@@ -99,21 +101,7 @@ class EmailTemplate
     }
 
     /**
-     * Set createdAt
-     *
-     * @param datetime $createdAt
-     * @return EmailTemplate
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return datetime
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -121,21 +109,7 @@ class EmailTemplate
     }
 
     /**
-     * Set updatedAt
-     *
-     * @param datetime $updatedAt
-     * @return EmailTemplate
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return datetime
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -146,44 +120,27 @@ class EmailTemplate
     {
         return new EmailTemplateTranslationProxy($this
             , $locale
-            , array('subject', 'body')
+            , array('subject', 'body', 'bodyHtml')
             , __CLASS__ . 'Translation'
             , $this->translations
         );
     }
 
     /**
-     * @Valid
+     * @Assert\Valid
      */
     public function getTranslationProxies()
     {
         return new EmailTemplateTranslationProxyProxy($this);
     }
 
-    public function getEnTranslation()
-    {
-        return $this->translate('en');
-    }
-
     public function setTranslationProxies()
     {
     }
 
-    /**
-     * @ORM\PrePersist
-     */
-    public function beforePersist()
+    public function getEnTranslation()
     {
-        $this->setCreatedAt(new \DateTime());
-        $this->setUpdatedAt(new \DateTime());
-    }
-
-    /**
-     * @ORM\PreUpdate
-     */
-    public function beforeUpdate()
-    {
-        $this->setUpdatedAt(new \DateTime());
+        return $this->translate('en');
     }
 
     public function __toString()
