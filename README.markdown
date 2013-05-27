@@ -26,6 +26,10 @@ Installation
 
 All the installation instructions are located in [documentation](https://github.com/Remixjobs/RjEmailBundle/blob/master/Resources/doc/index.md).
 
+TODO
+-----
+Integrate with https://github.com/robertotru/ToInlineStyleEmailBundle
+
 
 Reporting an issue or a feature request
 ---------------------------------------
