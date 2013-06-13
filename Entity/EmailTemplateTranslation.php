@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation\Versioned;
 /**
  * @ORM\Table(
  *  name="email_translation",
- *  indexes={@ORM\index(name="lookup_idx", columns={
+ *  indexes={@ORM\Index(name="lookup_idx", columns={
  *   "locale", "translatable_id"
  *  })}
  *  ,uniqueConstraints={@ORM\UniqueConstraint(name="lookup_unique_idx", columns={
