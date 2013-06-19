@@ -136,6 +136,10 @@ class EmailTemplateManager
             ->setBody($template->getBody())
             ;
 
+        if ($template->getBodyHtml() && strlen($template->getBodyHtml()) > 0) {
+            $message->addPart($template->getBodyHtml(), 'text/html');
+        }
+
         if ($to) {
             $message->setTo($to);
         }
