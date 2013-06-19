@@ -83,13 +83,21 @@ class EmailTemplateManager
             , $vars
         );
 
-        return array(
+        $vars = array(
             'subject'   => $subject,
-            'body'      => $body,
-            'bodyHtml' => $bodyHtml,
             'fromName'  => $tr->getFromName() ?: $this->defaultFromName,
             'fromEmail' => $tr->getFromEmail() ?: $this->defaultFromEmail,
         );
+
+        if ($body && strlen($body) > 0) {
+            $vars['body'] = $body;
+        }
+
+        if ($bodyHtml && strlen($bodyHtml) > 0) {
+            $vars['bodyHtml'] = $bodyHtml;
+        }
+
+        return $vars;
     }
 
     public function renderEmail($templateName, $locale = null, $vars = array(), Message $message = null)
