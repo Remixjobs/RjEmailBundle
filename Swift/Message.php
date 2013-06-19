@@ -31,8 +31,8 @@ class Message extends \Swift_Message
         if (isset($parameters['body'])) {
             $message->setBody($parameters['body'], 'text/plain');
         }
-        if (isset($parameters['htmlBody'])) {
-            $message->addPart($parameters['body'], 'text/html');
+        if (isset($parameters['bodyHtml'])) {
+            $message->addPart($parameters['bodyHtml'], 'text/html');
         }
         if (isset($parameters['contentType'])) {
             $message->setContentType($parameters['contentType']);
