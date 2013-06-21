@@ -92,8 +92,12 @@ class EmailTemplateAdminController extends CRUDController
             ->setFrom($ret['fromEmail'], $ret['fromName'])
             ->setTo($to)
             ->setSubject($ret['subject'])
-            ->setBody($ret['body'], 'text/html', 'utf-8')
+            ->setBody($ret['body'], 'text/plain', 'utf-8')
         ;
+
+        if (isset($ret['bodyHtml']) && strlen($ret['bodyHtml']) > 0) {
+            $message->addPart($ret['bodyHtml'], 'text/html');
+        }
 
         $this->get('mailer')->send($message);
     }
