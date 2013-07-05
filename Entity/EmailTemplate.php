@@ -63,7 +63,7 @@ class EmailTemplate
     private $updatedAt;
 
     /**
-     * @ORM\OneToMany(targetEntity="EmailTemplateTranslation", mappedBy="translatable", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="EmailTemplateTranslation", mappedBy="translatable", cascade={"persist", "remove"})
      */
     private $translations;
 
