@@ -20,8 +20,8 @@
         "php": ">=5.3.2",
         "symfony/framework-bundle": "2.*",
         "swiftmailer/swiftmailer": "*",
-        "stof/doctrine-extensions-bundle": "dev-master",
-        "a2lix/translation-form-bundle" : "dev-master",
+        "stof/doctrine-extensions-bundle": "*",
+        "a2lix/translation-form-bundle" : "*",
         "twig/twig": "1.*"
     },
 
