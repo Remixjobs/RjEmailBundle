@@ -65,11 +65,15 @@ class TwigSwiftMailer implements MailerInterface
             ->setSubject($renderedTemplate['subject'])
             ->setFrom($fromEmail)
             ->setTo($toEmail)
-            ->setBody($renderedTemplate['body'], 'text/plain')
         ;
 
-        if (array_key_exists('bodyHtml', $renderedTemplate)) {
-            $message->addPart($renderedTemplate['bodyHtml'], 'text/html');
+        if (array_key_exists('body', $renderedTemplate)) {
+            $message->setBody($renderedTemplate['body'], 'text/plain');
+            if (array_key_exists('bodyHtml', $renderedTemplate)) {
+                $message->addPart($renderedTemplate['bodyHtml'], 'text/html');
+            }
+        } else if (array_key_exists('bodyHtml', $renderedTemplate)) {
+            $message->setBody($renderedTemplate['bodyHtml'], 'text/html');
         }
 
         $this->mailer->send($message);
