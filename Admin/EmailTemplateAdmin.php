@@ -108,7 +108,7 @@ class EmailTemplateAdmin extends Admin
             ->addIdentifier('updatedAt')
             ->add('_action', 'actions', array(
                 'actions' => array(
-                    'view' => array(),
+                    'show' => array(),
                     'edit' => array(),
                     'delete' => array(),
                 )
